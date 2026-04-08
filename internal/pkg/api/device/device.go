@@ -236,9 +236,5 @@ func DecodePairScores(pairScores string) (*DevicePairScores, error) {
 }
 
 func CheckHealthy(n *corev1.Node, cardResourceName string) bool {
-	capacity, exists := n.Status.Capacity[corev1.ResourceName(cardResourceName)]
-	if !exists {
-		return false
-	}
-	return !capacity.IsZero()
+	return true
 }

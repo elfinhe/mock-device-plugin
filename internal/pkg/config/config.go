@@ -35,6 +35,7 @@ import (
 	"github.com/HAMi/mock-device-plugin/internal/pkg/api/device/metax"
 	"github.com/HAMi/mock-device-plugin/internal/pkg/api/device/mthreads"
 	"github.com/HAMi/mock-device-plugin/internal/pkg/api/device/nvidia"
+	"github.com/HAMi/mock-device-plugin/internal/pkg/api/device/tpu"
 )
 
 type Config struct {
@@ -49,6 +50,7 @@ type Config struct {
 	AWSNeuronConfig awsneuron.AWSNeuronConfig `yaml:"awsneuron"`
 	AMDGPUConfig    amd.AMDConfig             `yaml:"amd"`
 	VNPUs           []ascend.VNPUConfig       `yaml:"vnpus"`
+	TpuConfig       tpu.TpuConfig             `yaml:"tpu"`
 }
 
 var (
@@ -104,6 +106,10 @@ func InitDevicesWithConfig(config *Config) error {
 	nvidiaDevice := nvidia.InitNvidiaDevice(config.NvidiaConfig)
 	if nvidiaDevice != nil {
 		device.DevicesMap[nvidiaDevice.CommonWord()] = nvidiaDevice
+	}
+	tpuDevice := tpu.InitTpuDevice(config.TpuConfig)
+	if tpuDevice != nil {
+		device.DevicesMap[tpuDevice.CommonWord()] = tpuDevice
 	}
 	return nil
 }

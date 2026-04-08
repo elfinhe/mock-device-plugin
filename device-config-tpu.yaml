@@ -1,0 +1,33 @@
+---
+# Source: hami/templates/scheduler/device-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hami-scheduler-device
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/component: hami-scheduler
+    helm.sh/chart: hami-2.8.0
+    app.kubernetes.io/name: hami
+    app.kubernetes.io/instance: hami
+    app.kubernetes.io/version: "2.8.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  device-config.yaml: |-
+    tpu:
+      resourceCountName: google.com/tpu
+      resourceMemoryName: google.com/tpumem
+      resourceMemoryPercentageName: google.com/tpumem-percentage
+      resourceCoreName: google.com/tpucores
+      resourcePriorityName: google.com/priority
+      overwriteEnv: false
+      defaultMemory: 0
+      defaultCores: 1
+      defaultTPUNum: 512
+      memoryFactor: 1
+      deviceSplitCount: 10
+      deviceMemoryScaling: 1
+      deviceCoreScaling: 1
+      gpuCorePolicy: default
+      libCudaLogLevel: 1
+      runtimeClassName: ""

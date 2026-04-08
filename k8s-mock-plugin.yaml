@@ -14,12 +14,14 @@ spec:
       labels:
         app.kubernetes.io/component: hami-mock-device-plugin
     spec:
+      nodeSelector:
+        purpose: mock-test
       serviceAccountName: hami-mock-device-plugin
       tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
       containers:
-      - image: projecthami/mock-device-plugin:latest 
+      - image: gcr.io/gke-aishared-gsc-dev/mock-device-plugin:0.3
         name: hami-mock-dp-cntr
         env:
           - name: NODE_NAME
