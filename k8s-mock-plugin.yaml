@@ -15,13 +15,14 @@ spec:
         app.kubernetes.io/component: hami-mock-device-plugin
     spec:
       nodeSelector:
-        purpose: mock-test
+        cloud.google.com/gke-tpu-mock: tpu7x
       serviceAccountName: hami-mock-device-plugin
       tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
       containers:
-      - image: gcr.io/gke-aishared-gsc-dev/mock-device-plugin:0.3
+      - image: us-docker.pkg.dev/taohe-gke-dev/tpuxpack/mock-device-plugin:v2
+        imagePullPolicy: Always
         name: hami-mock-dp-cntr
         env:
           - name: NODE_NAME

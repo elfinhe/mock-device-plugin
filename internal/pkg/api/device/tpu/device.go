@@ -92,14 +92,7 @@ func (dev *TpuDevices) GetNodeDevices(n *corev1.Node) ([]*device.DeviceInfo, err
 }
 
 func (dev *TpuDevices) GetResource(n *corev1.Node) map[string]int {
-	memoryResourceName := device.GetResourceName(dev.config.ResourceMemoryName)
-	coreResourceName := device.GetResourceName(dev.config.ResourceCoreName)
-	memoryPercentageName := device.GetResourceName(dev.config.ResourceMemoryPercentageName)
-	resourceMap := map[string]int{
-		memoryResourceName:   0,
-		coreResourceName:     0,
-		memoryPercentageName: 0,
-	}
+	resourceMap := map[string]int{}
 	if !device.CheckHealthy(n, dev.config.ResourceCountName) {
 		klog.Infof("device %s is unhealthy on this node", dev.CommonWord())
 		return resourceMap
@@ -109,24 +102,34 @@ func (dev *TpuDevices) GetResource(n *corev1.Node) map[string]int {
 		klog.Infof("no device %s on this node", TpuDevice)
 		return resourceMap
 	}
+	if dev.config.ResourceCountName != "" {
+		countName := device.GetResourceName(dev.config.ResourceCountName)
+		resourceMap[countName] = len(devs)
+	}
+	var totalMem int
+	var totalCores int
 	for _, val := range devs {
-		resourceMap[memoryResourceName] += int(val.Devmem)
-		resourceMap[coreResourceName] += int(val.Devcore)
-		resourceMap[memoryPercentageName] += 100
+		totalMem += int(val.Devmem)
+		totalCores += int(val.Devcore)
 	}
 	if dev.config.MemoryFactor > 1 {
-		rawMemory := resourceMap[memoryResourceName]
-		resourceMap[memoryResourceName] /= int(dev.config.MemoryFactor)
-		klog.InfoS("Update memory", "raw", rawMemory, "after", resourceMap[memoryResourceName], "factor", dev.config.MemoryFactor)
+		rawMemory := totalMem
+		totalMem /= int(dev.config.MemoryFactor)
+		klog.InfoS("Update memory", "raw", rawMemory, "after", totalMem, "factor", dev.config.MemoryFactor)
 	}
-	klog.InfoS("Add resources",
-		memoryResourceName,
-		resourceMap[memoryResourceName],
-		coreResourceName,
-		resourceMap[coreResourceName],
-		memoryPercentageName,
-		resourceMap[memoryPercentageName],
-	)
+	if dev.config.ResourceMemoryName != "" {
+		memoryResourceName := device.GetResourceName(dev.config.ResourceMemoryName)
+		resourceMap[memoryResourceName] = totalMem
+	}
+	if dev.config.ResourceCoreName != "" {
+		coreResourceName := device.GetResourceName(dev.config.ResourceCoreName)
+		resourceMap[coreResourceName] = totalCores
+	}
+	if dev.config.ResourceMemoryPercentageName != "" {
+		memoryPercentageName := device.GetResourceName(dev.config.ResourceMemoryPercentageName)
+		resourceMap[memoryPercentageName] = len(devs) * 100
+	}
+	klog.InfoS("Add resources", "map", resourceMap)
 	return resourceMap
 }
 

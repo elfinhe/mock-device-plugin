@@ -21,11 +21,11 @@ data:
       resourceCoreName: google.com/tpucores
       resourcePriorityName: google.com/priority
       overwriteEnv: false
-      defaultMemory: 0
-      defaultCores: 1
-      defaultTPUNum: 512
-      memoryFactor: 1
-      deviceSplitCount: 10
+      defaultMemory: 192000000
+      defaultCores: 8
+      defaultTPUNum: 4
+      memoryFactor: 1000000
+      deviceSplitCount: 1
       deviceMemoryScaling: 1
       deviceCoreScaling: 1
       gpuCorePolicy: default

@@ -3,10 +3,10 @@ kind: Pod
 metadata:
   name: tpu-mock-test-pod
 spec:
-  nodeName: gke-taohe-gpu-t2-pool-1-b5cfc725-smnc
   nodeSelector:
-    cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
-    cloud.google.com/gke-tpu-topology: 2x2x1
+    cloud.google.com/gke-tpu-mock: tpu7x
+    cloud.google.com/gke-tpu-accelerator: tpu7x
+    cloud.google.com/gke-tpu-topology: 4x4x4
   containers:
   - name: sheep-counter
     image: busybox
